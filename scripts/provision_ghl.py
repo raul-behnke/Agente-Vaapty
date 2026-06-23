@@ -46,6 +46,8 @@ def api(method, path, token, version, body=None, query=None):
     req.add_header("Authorization", f"Bearer {token}")
     req.add_header("Version", version)
     req.add_header("Accept", "application/json")
+    # Cloudflare (erro 1010) bloqueia UA padrao do urllib; finge browser.
+    req.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
     if data:
         req.add_header("Content-Type", "application/json")
     try:
@@ -90,11 +92,12 @@ def main():
     if not loc or not token:
         sys.exit("Faltam GHL_LOCATION_ID / GHL_PIT_TOKEN no .env")
 
-    # sanity
-    st, _ = api("GET", f"/locations/{loc}", token, version)
-    print(f"[auth] GET /locations/{loc} -> HTTP {st}")
+    # sanity — usa customFields (escopo que o agente realmente precisa).
+    # GET /locations/{id} exige locations.readonly, que o PIT pode nao ter; nao bloqueia.
+    st, _ = api("GET", f"/locations/{loc}/customFields/", token, version)
+    print(f"[auth] GET /locations/{loc}/customFields/ -> HTTP {st}")
     if st in (401, 403):
-        sys.exit("Token inválido/sem permissão.")
+        sys.exit("Token inválido/sem permissão (customFields).")
 
     results = {}
 
