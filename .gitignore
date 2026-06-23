@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+/tmp/
+
+# HTMLs com credenciais GHL hardcoded (PIT token) — nao versionar
+plan/faq-*.html
+
+# Material fonte (nao versionar — apenas arquivos gerados a partir destes)
+plan/transcript-*.txt
+plan/WhatsApp Chat - Vaapty - Implantação Zoi/
+plan/\[ESTRUTURA COMERCIAL\] \[Vaapty\] pré-vendas/
